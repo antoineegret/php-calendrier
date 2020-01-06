@@ -1,11 +1,11 @@
 <?php
-//recupération du mois courant $currentMonth = date('m');
-$currentMonth = !empty($_POST['month'])? $_POST['month']: date('m');
+//recupération du mois courant $selectedMonth = date('m');
+$selectedMonth = !empty($_POST['month'])? $_POST['month']: date('m');
 // !empty et l'inverse de empty vide en francais
-$currentYear = !empty($_POST['year'])? $_POST['year']: date('Y');
-$daysInMonth = date('t', mktime(0,0,0,$currentMonth,1,$currentYear));
+$selectedYear = !empty($_POST['year'])? $_POST['year']: date('Y');
+$daysInMonth = date('t', mktime(0,0,0,$selectedMonth,1,$selectedYear));
 // recupére le 1er jour du mois pour l'année courante
-$firstDayOfMonthInWeek = date('N',mktime(0,0,0,$currentMonth,1,$currentYear));
+$firstDayOfMonthInWeek = date('N',mktime(0,0,0,$selectedMonth,1,$selectedYear));
 // tableau pour sauvegarder le nom des jours 
 $weekDays = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche']; 
 // tableau pour sauvegarder le nom des mois
@@ -25,27 +25,35 @@ $yearMonths = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Août'
   <body>
       <div class="container">
           <h1>Année 2020</h1>
-          <form method="">
+          <form method="post">
+              <!-- tout ce qui est dans le select month permet de choisir le mois désirer -->
               <select name="month">
-                  <?php
+                  <!--renvoi au tableau $yearMonth avec leur numéro correspondant -->
+                  <?php 
                   foreach ($yearMonths as $monthsNumber => $yearMonth): ?>
-                  <option value="<?= $monthsNumber+1 ?>"><?= $yearMonth ?></option>
+                  <option value="<?= $monthsNumber+1 ?>" <?= ($selectedMonth == $monthsNumber+1)? 'selected' : '' ?> ><?= $yearMonth ?></option>
                   <?php endforeach; ?>
               </select>
+              <!-- tout ce qui est dans le select year permet de choisir l'année désirer -->              
               <select name="year">
-                  <?php
+                   <!--on peut choisir de l'année 1900 jusqu'a 2100 maximum-->
+                  <?php 
                   for ($year = 1900; $year <= 2100; $year++): ?>
-                  <option value="<?= $year ?>"><?= $year ?></option>
-                  <?php endfor; ?>
+                  <option value="<?= $year ?>" <?= ($selectedYear == $year)? 'selected' : '' ?> ><?= $year ?></option>
+                  <?php endfor; ?> <!-- endfor marque la fin du for -->
               </select>
               <input type="submit" >
           </form>
           <table class="table table-bordered">
               <thead>
-              <?php
-              foreach($weekDays as $weekDay): ?>
-              <th class="bg-light"><?php echo $weekDay; ?></th>
-              <?php endforeach; ?>
+                   <!--pour chaque weekdays comme weekday-->
+                   <tr>                      
+                    <?php 
+                    foreach($weekDays as $weekDay): ?>
+                  <!-- affiche le jour de la semaine dans la 1er ligne -->
+                        <th class="bg-primary"><?php echo $weekDay; ?></th>
+                    <?php endforeach; ?>
+                   </tr>
               </thead>
               <tbody>
                   <tr>
@@ -65,7 +73,7 @@ $yearMonths = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Août'
                           $day++;
                       }
                       if ($cell % 7 == 0){
-                           if($cell > $requiredCells){
+                           if($cell >= $requiredCells){
                           break;
                       }
                           ?>
